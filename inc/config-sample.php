@@ -23,7 +23,7 @@ $cfg['debug'] = false;
  *	anyone to use limited commands
  *	use command groupids
  */
-$cfg['cmd_auth_group'] = 6;
+$cfg['cmd_auth_group'] = 0;
 
 /*
  * Server Configuration
@@ -44,9 +44,9 @@ $server['options']	= array(	//Additional Framework Login Options
  * This handles auto-moving users to the AFK channel
  */
 $cfg['afk_mover'] = true; //Disables or Enables afk mover - false disables
-$afk_mover['chan_id'] = 6; //Channel to move AFK users to 
-$afk_mover['bot_chan_id'] = 2; //Channel to move/keep the bot in
-$afk_mover['time'] = 10; //Time in seconds to move a user to AFK channel if they have been idle
+$afk_mover['chan_id'] = 0; //Channel to move AFK users to 
+$afk_mover['bot_chan_id'] = 0; //Channel to move/keep the bot in
+$afk_mover['time'] = 3600; //Time in seconds to move a user to AFK channel if they have been idle
 
 /*
  * Channel Watch Configurations
@@ -56,47 +56,29 @@ $afk_mover['time'] = 10; //Time in seconds to move a user to AFK channel if they
  * are required to monitor channels even though renames
  * use command channelids 
  */
-$cfg['channel_mon'] = true; //Disables or Enables channel monitor - false disables
+$cfg['channel_mon'] = false; //Disables or Enables channel monitor - false disables
+/*
 $channel_mon[] = array(
-	'id'		=> '2', //Channel ID get this from the 'list_chan_info' command
-	'name'		=> 'Gaming 1', //Default Name to rename the channel to
+	'id' => 0, //Channel ID get this from the 'list_chan_info' command
+	'name' => '', //Default Name to rename the channel to
 	//If you choose both options on empty or after X time the channel will be reset
-	'reset_time'		=> 60, //Force reset channel after this time in seconds - 0 disables
-	'on_empty'		=> false //Force reset channel when empty - false disables
+	'reset_time' => 0, //Force reset channel after this time in seconds - 0 disables
+	'on_empty' => false //Force reset channel when empty - false disables
 	);
-$channel_mon[] = array(
-	'id'		=> '3', //Channel ID get this from the 'list_chan_info' command
-	'name'		=> 'Gaming 2', //Default Name to rename the channel to
-	//If you choose both options on empty or after X time the channel will be reset
-	'reset_time'		=> 0, //Force reset channel after this time in seconds - 0 disables
-	'on_empty'		=> true //Force reset channel when empty - false disables
-	);
-$channel_mon[] = array(
-	'id'		=> '5', //Channel ID get this from the 'list_chan_info' command
-	'name'		=> 'Gaming 3', //Default Name to rename the channel to
-	//If you choose both options on empty or after X time the channel will be reset
-	'reset_time'		=> 60, //Force reset channel after this time in seconds - 0 disables
-	'on_empty'		=> true //Force reset channel when empty - false disables
-	);
-
+*/
 /*
  * Temporary Password Configurations
  * This handles setting auto-renewing passwords
  * Periodically the bot will check to see if the password
  * exists if it does not it will create it
  */
-$cfg['tmp_psws'] = true; //Disables or Enables temporary passwords system - false disables
+$cfg['tmp_psws'] = false; //Disables or Enables temporary passwords system - false disables
+/*
 $tmp_pswds[] = array(
-	'desc' => 'Test 1', //Description of password
-	'pass' => 'test1', //The Password
-	'duration' => 160, //Duration of password(in seconds)
+	'desc' => '', //Description of password
+	'pass' => '', //The Password
+	'duration' => 0, //Duration of password(in seconds)
 	'chan_id' => 0, //Default channel to join (0 = default server channel)
 	'chan_pass' => '' //Password for default channel to join (if needed)
 	);
-$tmp_pswds[] = array(
-	'desc' => 'Join AFK', //Description of password
-	'pass' => 'testafk', //The Password
-	'duration' => 3600, //Duration of password(in seconds)
-	'chan_id' => 6, //Default channel to join (0 = default server channel)
-	'chan_pass' => '' //Password for default channel to join (if needed)
-	);
+*/
