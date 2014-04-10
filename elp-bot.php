@@ -8,6 +8,7 @@ $last_info;
 $last_check = time();
 try
 {
+	check_duplicate_passwords(); //Check for duplicate passwords on startup
 	/* subscribe to various events */
 	TeamSpeak3_Helper_Signal::getInstance()->subscribe('serverqueryConnected', 'onConnect');
 	TeamSpeak3_Helper_Signal::getInstance()->subscribe('serverqueryWaitTimeout', 'onTimeout');
@@ -193,6 +194,9 @@ function command_auth($client)
 function temporary_passwords()
 {
 	global $cfg, $ts3, $tmp_pswds;
+	
+	$cur_psws = array();
+	
 	if(!$cfg['tmp_psws'] || empty($tmp_pswds))
 		return;
 		
@@ -214,21 +218,28 @@ function temporary_passwords()
 	{
 		foreach($psw_list as $psw)
 			$cur_psws[] = (string)$psw['pw_clear'];
-			foreach($tmp_pswds as $tmp_pass)
+		foreach($tmp_pswds as $tmp_pass)
+		{
+			if(!in_array($tmp_pass['pass'], $cur_psws))
 			{
-				if(!in_array($tmp_pass['pass'], $cur_psws))
-				{
-					print_message('TMPPASS', 'Password '.$tmp_pass['pass'].' was created.');
-					$ts3->tempPasswordCreate($tmp_pass['pass'], $tmp_pass['duration'], $tmp_pass['chan_id'], $tmp_pass['chan_pass'], $tmp_pass['desc']);
-				}
+				$cur_psws[] = $tmp_pass['pass']; //Adds any newely added passwords to the duplication array to prevent duplicates in config
+				print_message('TMPPASS', 'Password '.$tmp_pass['pass'].' was created.');
+				$ts3->tempPasswordCreate($tmp_pass['pass'], $tmp_pass['duration'], $tmp_pass['chan_id'], $tmp_pass['chan_pass'], $tmp_pass['desc']);
 			}
+		}
 	}
 	else
 	{
 		print_message('TMPPASS', 'No passwords exist. Creating all passwords.');
 		if(!empty($tmp_pswds))
 			foreach($tmp_pswds as $tmp_pass)
-				$ts3->tempPasswordCreate($tmp_pass['pass'], $tmp_pass['duration'], $tmp_pass['chan_id'], $tmp_pass['chan_pass'], $tmp_pass['desc']);
+			{
+				if(!in_array($tmp_pass['pass'], $cur_psws))
+				{
+					$cur_psws[] = $tmp_pass['pass']; //Adds any newely added passwords to the duplication array to prevent duplicates in config
+					$ts3->tempPasswordCreate($tmp_pass['pass'], $tmp_pass['duration'], $tmp_pass['chan_id'], $tmp_pass['chan_pass'], $tmp_pass['desc']);
+				}
+			}
 	
 	}
 	if($cfg['debug'])
@@ -236,6 +247,30 @@ function temporary_passwords()
 		$end_time = microtime();
 		print_message('TIME', 'Temporary Passwords Took '.($end_time - $start_time).' seconds');
 	}
+}
+
+function check_duplicate_passwords()
+{
+	global $cfg, $tmp_pswds;
+	
+	if(!$cfg['tmp_psws'] || empty($tmp_pswds))
+		return;
+	
+	$cfg_psws = array();
+	
+	foreach($tmp_pswds as $tmp_pass)
+	{
+		print_r($cfg_psws);
+		if(in_array($tmp_pass['pass'], $cfg_psws))
+		{
+			$duplicate = true;
+			print_message('TMPPASS', 'Duplicate password: '.$tmp_pass['pass'].' (Description: '.$tmp_pass['desc'].') was found.');
+		}
+		else
+			$cfg_psws[] = $tmp_pass['pass'];
+	}
+	if($duplicate)
+		print_message('ERROR', 'Duplicate password exist in the configuration file. Please check your config.php file and issue the reload command.');
 }
 // ================= [ BEGIN OF CALLBACK FUNCTION DEFINITIONS ] =================
  
