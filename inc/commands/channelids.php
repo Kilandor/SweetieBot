@@ -1,4 +1,9 @@
 <?php
+
+// Authenticates the user for access to this command
+if(!command_auth($client, $args, 'channelids'))
+	return false;
+
 $ts3->channelListReset(); // We need to call this to reload/refresh incase channels was added
 foreach($ts3->channelList() as $channel)
 {

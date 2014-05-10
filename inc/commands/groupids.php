@@ -1,5 +1,9 @@
 <?php
 
+// Authenticates the user for access to this command
+if(!command_auth($client, $args, 'groupids'))
+	return false;
+
 $ts3->serverGroupListReset(); // We need to call this to reload/refresh incase server groups was added
 
 foreach($ts3->serverGroupList() as $group)
