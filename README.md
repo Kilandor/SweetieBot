@@ -19,7 +19,7 @@ $quick_config['full'] = array(
 	);
 */
 ```
-3. Uncomment it by removing the **/* ** and ** */** if your using the default Server Admin group your are complete. If your using a UniqueID replace the 6 with **'UNIQUE_ID_HERE'**
+3. Uncomment $quick_config if your using the default Server Admin group your are complete. If your using a UniqueID replace the 6 with **'UNIQUE_ID_HERE'**
 ```php
 $quick_config['full'] = array(
 	'7oggBRGutT/h3Bt41YREVuAiMVc=' => true
