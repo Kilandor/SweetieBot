@@ -64,8 +64,9 @@ $cfg['modules']['authentication']['cfg']['shutdown'] = array();
 $cfg['modules']['authentication']['cfg']['test'] = array();
 
 //Here we load in our quick config, it will replace any config with the values set in it
-foreach($cfg['modules']['authentication']['cfg'] as $area => $tmp_cfg)
-	$cfg['modules']['authentication']['cfg'][$area] = array_replace_recursive($tmp_cfg, $quick_config);
+if(is_array($quick_config))
+	foreach($cfg['modules']['authentication']['cfg'] as $area => $tmp_cfg)
+		$cfg['modules']['authentication']['cfg'][$area] = array_replace_recursive($tmp_cfg, $quick_config);
 
 /*
  * AFK Mover Configurations
