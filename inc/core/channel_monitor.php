@@ -59,7 +59,7 @@ function channel_monitor($event = null)
 
 function channel_edited($event = null)
 {
-	global $cfg, $ts3, $chan_edit_info;
+	global $cfg, $chan_edit_info;
 	if(!$cfg['modules']['channel_monitor']['enabled'] || empty($cfg['modules']['channel_monitor']['cfg']))
 		return;
 
