@@ -14,11 +14,10 @@ function afk_mover($event = null)
 
 	if(!$cfg['modules']['afk_mover']['enabled'])
 		return;
-	if($cfg['debug']['enabled'])
-	{
-		$start_time = microtime();
-		print_message('DEBUG', 'Start AFK Mover');
-	}
+
+	$start_time = microtime();
+	debug_message('Start AFK Mover');
+
 	$ts3->clientListReset(); // We need to call this to reload/refresh clients
 	$client_list = $ts3->clientList();
 	foreach($client_list as $client)
@@ -34,9 +33,7 @@ function afk_mover($event = null)
 			$client->message('[INFO] You have been moved to the AFK channel due to being idle for a long period of time');
 		}
 	}
-	if($cfg['debug']['enabled'])
-	{
-		$end_time = microtime();
-		print_message('DEBUG', 'AFK Monitor Took '.($end_time - $start_time).' seconds');
-	}
+
+	$end_time = microtime();
+	debug_message('AFK Monitor Took '.($end_time - $start_time).' seconds');
 }

@@ -55,3 +55,16 @@ function print_message($label, $message)
 		file_put_contents('bot_console.log', $output, FILE_APPEND);
 
 }
+
+/**
+ * Wrapper for Debug messages
+ *
+ * @return void
+ */
+function debug_message($message)
+{
+	global $cfg;
+
+	if($cfg['debug']['enabled'])
+		print_message('DEBUG', $message);
+}

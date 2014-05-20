@@ -17,11 +17,9 @@ function temporary_passwords($event = null)
 	if(!$cfg['modules']['temporary_passwords']['enabled'] || empty($cfg['modules']['temporary_passwords']['cfg']))
 		return;
 
-	if($cfg['debug']['enabled'])
-	{
-		$start_time = microtime();
-		print_message('DEBUG', 'Start Temporary Passwords');
-	}
+	$start_time = microtime();
+	debug_message('Start Temporary Passwords');
+
 	try
 	{
 		$psw_list = $ts3->tempPasswordList();
@@ -59,11 +57,10 @@ function temporary_passwords($event = null)
 			}
 
 	}
-	if($cfg['debug']['enabled'])
-	{
-		$end_time = microtime();
-		print_message('DEBUG', 'Temporary Passwords Took '.($end_time - $start_time).' seconds');
-	}
+
+	$end_time = microtime();
+	debug_message('Temporary Passwords Took '.($end_time - $start_time).' seconds');
+
 }
 
 /**
