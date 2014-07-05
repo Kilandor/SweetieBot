@@ -28,7 +28,7 @@ function afk_mover($event = null)
 		if(floor($client->getProperty('client_idle_time') / 1000) > $cfg['modules']['afk_mover']['cfg']['time'] && $client->getProperty('cid') != $cfg['modules']['afk_mover']['cfg']['chan_id'])
 		{
 			if($cfg['debug']['enabled'])
-				print_message('DEBUG', 'AFK Client Nickname '.$client->getProperty('client_nickname').'| '.print_r($client, true));
+				print_message('DEBUG', 'AFK Client Nickname '.$client->getProperty('client_nickname');
 			$client->move($cfg['modules']['afk_mover']['cfg']['chan_id']);
 			$client->message('[INFO] You have been moved to the AFK channel due to being idle for a long period of time');
 		}
