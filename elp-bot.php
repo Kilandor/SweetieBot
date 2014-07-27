@@ -1,11 +1,14 @@
 <?php
 require 'inc/config.php';
 
+if(!file_exists($cfg['log_dir']))
+	mkdir($cfg['log_dir'], 0777);
+
 if($cfg['debug']['enabled'])
 {
 	ini_set("display_errors", "On");
 	ini_set("log_errors", 1);
-	ini_set("error_log", "php-error.log");
+	ini_set("error_log", $cfg['log_dir']."/php-error.log");
 }
 
 require_once($cfg['core_dir'].'functions.php');
@@ -38,9 +41,7 @@ try
 }
 catch(Exception $e)
 {
-print_message("FATAL", $e->getMessage() . "\n");
-exit;
-
+	print_message("FATAL", $e->getMessage() . "\n");
 	die("[ERROR]  " . $e->getMessage() . "\n");
 }
 

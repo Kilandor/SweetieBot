@@ -11,6 +11,7 @@ $cfg['core_dir'] = './inc/core/';
 $cfg['date_format'] = 'm-d G:i:s'; //Log Timestamp format - see php.net/date for formatting
 $cfg['monitor_delay'] = 10; //Delay between checking for monitor activities (Excludes on empty channel monitor checks)
 $cfg['log'] = false;  // Enable outputting all console messages to log file
+$cfg['log_dir'] = './logs'; // Directory to save all log files to
 
 /*
  * Debug Configuration

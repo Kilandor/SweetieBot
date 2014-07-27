@@ -48,11 +48,13 @@ function print_message($label, $message)
 		echo $output;
 
 	if($label == 'DEBUG')
-		file_put_contents('bot_debug.log', $output, FILE_APPEND);
+		file_put_contents($cfg['log_dir'].'/bot_debug.log', $output, FILE_APPEND);
 	else if($label == 'SECURITY')
-			file_put_contents('bot_security.log', $output, FILE_APPEND);
+			file_put_contents($cfg['log_dir'].'/bot_security.log', $output, FILE_APPEND);
+	else if($label == 'FATAL')
+		file_put_contents($cfg['log_dir'].'/bot_console_fatal.log', $output, FILE_APPEND);
 	else if($cfg['log'])
-		file_put_contents('bot_console.log', $output, FILE_APPEND);
+		file_put_contents($cfg['log_dir'].'/bot_console.log', $output, FILE_APPEND);
 
 }
 

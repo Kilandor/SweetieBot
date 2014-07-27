@@ -1,0 +1,1 @@
+screen -dmS sweetiebot php -f elp-bot.php
