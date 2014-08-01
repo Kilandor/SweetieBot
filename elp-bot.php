@@ -41,8 +41,10 @@ try
 }
 catch(Exception $e)
 {
-	print_message("FATAL", $e->getMessage() . "\n");
-	die("[ERROR]  " . $e->getMessage() . "\n");
+	print_message("FATAL", $e->getMessage());
+	print_message("FATAL", $e->getTraceAsString());
+	print_message("FATAL", debug_string_backtrace());
+	die("[ERROR]  " . $e->getMessage() . "\n".$e->getTraceAsString()."\n".debug_string_backtrace());
 }
 
 // ================= [ BEGIN OF CALLBACK FUNCTION DEFINITIONS ] =================

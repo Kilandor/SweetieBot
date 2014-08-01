@@ -18,7 +18,6 @@ function channel_monitor($event = null)
 
 	if(!$cfg['modules']['channel_monitor']['enabled'] || empty($cfg['modules']['channel_monitor']['cfg']))
 		return;
-	if($cfg['debug']['enabled'])
 
 	$start_time = microtime();
 	debug_message('Start Channel Monitor');
