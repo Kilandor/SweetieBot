@@ -7,6 +7,7 @@ $cfg['hooks']['onChannelEdited'][] = 'channel_edited';
 
 /* Global Arrays */
 $chan_edit_info = array();
+$chan_last_run = 0;
 /**
  * Monitors Channels to rename them to defaults
  *
@@ -14,12 +15,19 @@ $chan_edit_info = array();
  */
 function channel_monitor($event = null)
 {
-	global $cfg, $ts3, $chan_edit_info;
+	global $cfg, $ts3, $chan_edit_info, $chan_last_run;
 
 	if(!$cfg['modules']['channel_monitor']['enabled'] || empty($cfg['modules']['channel_monitor']['cfg']))
 		return;
 
-	$start_time = microtime();
+	// Enforces timelimit to prevent running to often
+	if($chan_last_run > time())
+	{
+		debug_message('Chanel Monitor attempted to run '.($chan_last_run - time()).' seconds early');
+		return;
+	}
+
+	$start_time = microtime(true);
 	debug_message('Start Channel Monitor');
 
 	$ts3->channelListReset(); // We need to call this to reload/refresh incase channels was added
@@ -29,6 +37,7 @@ function channel_monitor($event = null)
 	{
 		$channel = $ts3->channelGetByID($chan_mon['id']);
 		$client_list = $channel->clientList();
+		debug_message('Channel Data |'.str_replace("\n", "<<NN>>", print_r($channel->getInfo(), true))); // simple method to compact the string, so we can expand it later
 		if($channel['cid'] == $chan_mon['id'] && $channel['channel_name'] != $chan_mon['name'])
 		{
 			if((time() - $chan_edit_info[$chan_mon['id']]['timestamp']) > $chan_mon['reset_time'] && $chan_mon['reset_time'] != 0)
@@ -51,7 +60,9 @@ function channel_monitor($event = null)
 		}
 	}
 
-	$end_time = microtime();
+	$chan_last_run = time() + $cfg['monitor_delay']; //Sets a timelimit
+
+	$end_time = microtime(true);
 	debug_message('Channel Monitor Took '.($end_time - $start_time).' seconds');
 
 }

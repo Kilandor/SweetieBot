@@ -76,7 +76,10 @@ function onTimeout($seconds, TeamSpeak3_Adapter_ServerQuery $adapter) //This tri
 		/* Hook System to call specified function */
 		if(!empty($cfg['hooks']['onTimeout']))
 			foreach($cfg['hooks']['onTimeout'] as $hook)
+			{
+				debug_message('onTimeout - Starting Hook - '.$hook);
 				$hook();
+			}
 	}
 	//print_message('SIG', 'no reply from the server for '.$seconds.' seconds');
 	if($adapter->getQueryLastTimestamp() < time()-300)
@@ -125,7 +128,10 @@ function onEvent(TeamSpeak3_Adapter_ServerQuery_Event $event, TeamSpeak3_Node_Ho
 		/* Hook System to call specified function */
 		if(!empty($cfg['hooks']['onEvent']))
 			foreach($cfg['hooks']['onEvent'] as $hook)
+			{
+				debug_message('onEvent - Starting Hook - '.$hook);
 				$hook($event);
+			}
 	}
 	//else // Debugging only
 		//print_message('SIG', "received notification ".$event->getType()."\n\t".$event->getMessage());
@@ -162,7 +168,10 @@ function onChannelEdited(TeamSpeak3_Adapter_ServerQuery_Event $event)
 	/* Hook System to call specified function */
 	if(!empty($cfg['hooks']['onChannelEdited']))
 		foreach($cfg['hooks']['onChannelEdited'] as $hook)
+		{
+			debug_message('onChannelEdited - Starting Hook - '.$hook);
 			$hook($event);
+		}
 }
 
 /**
@@ -178,7 +187,10 @@ function onPrivateMessage(TeamSpeak3_Adapter_ServerQuery_Event $event)
 	/* Hook System to call specified function */
 	if(!empty($cfg['hooks']['onPrivateMessage']))
 		foreach($cfg['hooks']['onPrivateMessage'] as $hook)
+		{
+			debug_message('onPrivateMessage - Starting Hook - '.$hook);
 			$hook($event);
+		}
 }
 
 /**
@@ -196,11 +208,12 @@ function onClientMoved(TeamSpeak3_Adapter_ServerQuery_Event $event)
 	$data = $event->getData();
 	//We have to do this whole mess to save/prevent running the event twice
 	//Because the server sends the event twice
+	//if it matches the last event skip it
+	if($last_info['client_moved']['client_id'] == $data['clid'] && $last_info['client_moved']['channel_id'] == $data['ctid'])
+		return;
 	if($data['reasonid'] == REASON_DISCONNECT) //User disconnected from server
 	{
-		//if it matches the last event skip it
-		if($last_info['client_moved']['client_id'] == $data['clid'] && $last_info['client_moved']['channel_id'] == $data['cfid'])
-			return;
+		debug_message('onClientMoved - Client Disconnected');
 		$last_info['client_moved'] = array(
 			'client_id' => $data['clid'],
 			'channel_id' => $data['cfid']
@@ -208,9 +221,7 @@ function onClientMoved(TeamSpeak3_Adapter_ServerQuery_Event $event)
 	}
 	else //User moved channels
 	{
-		//if it matches the last event skip it
-		if($last_info['client_moved']['client_id'] == $data['clid'] && $last_info['client_moved']['channel_id'] == $data['ctid'])
-			return;
+		debug_message('onClientMoved- Client Disconnected');
 		$last_info['client_moved'] = array(
 			'client_id' => $data['clid'],
 			'channel_id' => $data['ctid']
@@ -220,5 +231,8 @@ function onClientMoved(TeamSpeak3_Adapter_ServerQuery_Event $event)
 	/* Hook System to call specified function */
 	if(!empty($cfg['hooks']['onClientMoved']))
 		foreach($cfg['hooks']['onClientMoved'] as $hook)
+		{
+			debug_message('onClientMoved - Starting Hook - '.$hook);
 			$hook($event);
+		}
 }

@@ -3,6 +3,9 @@
 /* Hook Configuration */
 $cfg['hooks']['onTimeout'][] = 'temporary_passwords';
 
+/* Global Arrays */
+$pass_last_run = 0;
+
 /**
  * Handle automated temporary password creation
  *
@@ -10,14 +13,21 @@ $cfg['hooks']['onTimeout'][] = 'temporary_passwords';
  */
 function temporary_passwords($event = null)
 {
-	global $cfg, $ts3;
+	global $cfg, $ts3, $pass_last_run;
 
 	$cur_psws = array();
 
 	if(!$cfg['modules']['temporary_passwords']['enabled'] || empty($cfg['modules']['temporary_passwords']['cfg']))
 		return;
 
-	$start_time = microtime();
+	// Enforces timelimit to prevent running to often
+	if($pass_last_run > time())
+	{
+		debug_message('Temporary Passwords attempted to run '.($pass_last_run - time()).' seconds early');
+		return;
+	}
+
+	$start_time = microtime(true);
 	debug_message('Start Temporary Passwords');
 
 	try
@@ -58,7 +68,9 @@ function temporary_passwords($event = null)
 
 	}
 
-	$end_time = microtime();
+	$pass_last_run = time() + $cfg['monitor_delay']; //Sets a timelimit
+
+	$end_time = microtime(true);
 	debug_message('Temporary Passwords Took '.($end_time - $start_time).' seconds');
 
 }

@@ -3,6 +3,9 @@
 /* Hook Configuration */
 $cfg['hooks']['onTimeout'][] = 'afk_mover';
 
+/* Global Arrays */
+$afk_last_run = 0;
+
 /**
  * Monitors Channels to rename them to defaults
  *
@@ -10,12 +13,19 @@ $cfg['hooks']['onTimeout'][] = 'afk_mover';
  */
 function afk_mover($event = null)
 {
-	global $cfg, $ts3;
+	global $cfg, $ts3, $afk_last_run;
 
 	if(!$cfg['modules']['afk_mover']['enabled'])
 		return;
 
-	$start_time = microtime();
+	// Enforces timelimit to prevent running to often
+	if($afk_last_run > time())
+	{
+		debug_message('AFK Monitor attempted to run '.($afk_last_run - time()).' seconds early');
+		return;
+	}
+
+	$start_time = microtime(true);
 	debug_message('Start AFK Mover');
 
 	$ts3->clientListReset(); // We need to call this to reload/refresh clients
@@ -33,6 +43,8 @@ function afk_mover($event = null)
 		}
 	}
 
-	$end_time = microtime();
+	$afk_last_run = time() + $cfg['monitor_delay']; //Sets a timelimit
+
+	$end_time = microtime(true);
 	debug_message('AFK Monitor Took '.($end_time - $start_time).' seconds');
 }
