@@ -30,16 +30,21 @@ function afk_mover($event = null)
 
 	$ts3->clientListReset(); // We need to call this to reload/refresh clients
 	$client_list = $ts3->clientList();
-	foreach($client_list as $client)
+	if(empty($client_list))
+		debug_message('Client List Was Empty....Exiting');
+	else
 	{
-		//We skip the bot itself to keep it in the channel it wants to be in.
-		if($ts3->getParent()->whoamiGet('client_nickname') == $client->getProperty('client_nickname'))
-			continue;
-		if(floor($client->getProperty('client_idle_time') / 1000) > $cfg['modules']['afk_mover']['cfg']['time'] && $client->getProperty('cid') != $cfg['modules']['afk_mover']['cfg']['chan_id'])
+		foreach($client_list as $client)
 		{
-			debug_message('AFK Client Nickname '.$client->getProperty('client_nickname'));
-			$client->move($cfg['modules']['afk_mover']['cfg']['chan_id']);
-			$client->message('[INFO] You have been moved to the AFK channel due to being idle for a long period of time');
+			//We skip the bot itself to keep it in the channel it wants to be in.
+			if($ts3->getParent()->whoamiGet('client_nickname') == $client->getProperty('client_nickname'))
+				continue;
+			if(floor($client->getProperty('client_idle_time') / 1000) > $cfg['modules']['afk_mover']['cfg']['time'] && $client->getProperty('cid') != $cfg['modules']['afk_mover']['cfg']['chan_id'])
+			{
+				debug_message('AFK Client Nickname '.$client->getProperty('client_nickname'));
+				$client->move($cfg['modules']['afk_mover']['cfg']['chan_id']);
+				$client->message('[INFO] You have been moved to the AFK channel due to being idle for a long period of time');
+			}
 		}
 	}
 

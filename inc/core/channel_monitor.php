@@ -32,34 +32,43 @@ function channel_monitor($event = null)
 
 	$ts3->channelListReset(); // We need to call this to reload/refresh incase channels was added
 	$ts3->clientListReset(); // We need to call this to reload/refresh clients
-
-	foreach($cfg['modules']['channel_monitor']['cfg'] as $key => $chan_mon)
+	$channel_list = $ts3->channelList();
+	if(empty($channel_list))
+		debug_message('Channel List Was Empty....Exiting');
+	else
 	{
-		$channel = $ts3->channelGetByID($chan_mon['id']);
-		$client_list = $channel->clientList();
-		debug_message('Channel Data |'.str_replace("\n", "<<NN>>", print_r($channel->getInfo(), true))); // simple method to compact the string, so we can expand it later
-		if($channel['cid'] == $chan_mon['id'] && $channel['channel_name'] != $chan_mon['name'])
+		foreach($cfg['modules']['channel_monitor']['cfg'] as $key => $chan_mon)
 		{
-			if((time() - $chan_edit_info[$chan_mon['id']]['timestamp']) > $chan_mon['reset_time'] && $chan_mon['reset_time'] != 0)
+			//$channel = $ts3->channelGetByID($chan_mon['id']);
+			if(!array_key_exists($chan_mon['id'], $channel_list))
 			{
-				print_message('CHANMON', 'Channel '.$channel['channel_name'].' time elapsed reverting to '.$chan_mon['name']);
-				debug_message('Elapsed '.(time() - $chan_edit_info[$chan_mon['id']]['timestamp']).' seconds - Reset Time '.$chan_mon['reset_time'].' seconds');
-				$channel->modify(array(
-					'channel_name' => $chan_mon['name']
-					));
-				unset($chan_edit_info[$chan_mon['id']]);
+				debug_message('Channel '.$chan_mon['id'].' was not found in server information skipping....');
+				continue;
 			}
-			elseif(empty($client_list) && $chan_mon['on_empty'])
+			$channel = $channel_list[$chan_mon['id']];
+			$client_list = $channel->clientList();
+			if($channel['cid'] == $chan_mon['id'] && $channel['channel_name'] != $chan_mon['name'])
 			{
-				print_message('CHANMON', 'Channel '.$channel['channel_name'].' was empty reverting to '.$chan_mon['name']);
-				$channel->modify(array(
-					'channel_name' => $chan_mon['name']
-					));
-				unset($chan_edit_info[$chan_mon['id']]);
+				if((time() - $chan_edit_info[$chan_mon['id']]['timestamp']) > $chan_mon['reset_time'] && $chan_mon['reset_time'] != 0)
+				{
+					print_message('CHANMON', 'Channel '.$channel['channel_name'].' time elapsed reverting to '.$chan_mon['name']);
+					debug_message('Elapsed '.(time() - $chan_edit_info[$chan_mon['id']]['timestamp']).' seconds - Reset Time '.$chan_mon['reset_time'].' seconds');
+					$channel->modify(array(
+						'channel_name' => $chan_mon['name']
+						));
+					unset($chan_edit_info[$chan_mon['id']]);
+				}
+				elseif(empty($client_list) && $chan_mon['on_empty'])
+				{
+					print_message('CHANMON', 'Channel '.$channel['channel_name'].' was empty reverting to '.$chan_mon['name']);
+					$channel->modify(array(
+						'channel_name' => $chan_mon['name']
+						));
+					unset($chan_edit_info[$chan_mon['id']]);
+				}
 			}
 		}
 	}
-
 	$chan_last_run = time() + $cfg['monitor_delay']; //Sets a timelimit
 
 	$end_time = microtime(true);
