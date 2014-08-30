@@ -17,7 +17,7 @@ $cfg['log_dir'] = './logs'; // Directory to save all log files to
  * Debug Configuration
  *
  */
-$cfg['debug']['enabled'] = true; //Enable Debugging code
+$cfg['debug']['enabled'] = false; //Enable Debugging code
 $cfg['debug']['console'] = false; //Enable showing all 'DEBUG' messages in console - requires debugging enabled
 
 /*

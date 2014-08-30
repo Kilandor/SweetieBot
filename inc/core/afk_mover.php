@@ -25,6 +25,8 @@ function afk_mover($event = null)
 		return;
 	}
 
+	$afk_last_run = time() + $cfg['monitor_delay']; //Sets a timelimit
+
 	$start_time = microtime(true);
 	debug_message('Start AFK Mover');
 
@@ -47,8 +49,6 @@ function afk_mover($event = null)
 			}
 		}
 	}
-
-	$afk_last_run = time() + $cfg['monitor_delay']; //Sets a timelimit
 
 	$end_time = microtime(true);
 	debug_message('AFK Monitor Took '.($end_time - $start_time).' seconds');

@@ -21,6 +21,7 @@ foreach($cfg['modules'] as $name => $modulescfg)
 TeamSpeak3::init();
 $last_info;
 $last_check = time();
+$in_timeout_check = false;
 try
 {
 	check_duplicate_passwords(); //Check for duplicate passwords on startup
@@ -69,7 +70,7 @@ function onConnect(TeamSpeak3_Adapter_ServerQuery $adapter)
  */
 function onTimeout($seconds, TeamSpeak3_Adapter_ServerQuery $adapter) //This triggers every 10 seconds
 {
-	global $cfg, $ts3, $last_check;
+	global $cfg, $ts3, $last_check, $in_timeout_check;
 	if(floor(time() - $last_check) >= $cfg['monitor_delay'])
 	{
 		$last_check = time();
@@ -77,8 +78,15 @@ function onTimeout($seconds, TeamSpeak3_Adapter_ServerQuery $adapter) //This tri
 		if(!empty($cfg['hooks']['onTimeout']))
 			foreach($cfg['hooks']['onTimeout'] as $hook)
 			{
+				if($in_timeout_check)
+				{
+					debug_message('onTimeout - Already in Timeout Hook exiting this loop');
+					break;
+				}
+				$in_timeout_check = true;
 				debug_message('onTimeout - Starting Hook - '.$hook);
 				$hook();
+				$in_timeout_check = false;
 			}
 	}
 	//print_message('SIG', 'no reply from the server for '.$seconds.' seconds');
@@ -121,8 +129,8 @@ function onEvent(TeamSpeak3_Adapter_ServerQuery_Event $event, TeamSpeak3_Node_Ho
 	}
 	elseif($type == 'channeledited')
 		onChannelEdited($event);
-	elseif($type == 'clientmoved' || $type == 'clientleftview')
-		onClientMoved($event);
+	//elseif($type == 'clientmoved' || $type == 'clientleftview')
+		//onClientMoved($event);
 	else
 	{
 		/* Hook System to call specified function */
@@ -201,6 +209,7 @@ function onPrivateMessage(TeamSpeak3_Adapter_ServerQuery_Event $event)
  * @param  TeamSpeak3_Adapter_ServerQuery_Event $event
  * @return void
  */
+/*
 function onClientMoved(TeamSpeak3_Adapter_ServerQuery_Event $event)
 {
 	global $cfg, $ts3, $last_info;
@@ -221,14 +230,14 @@ function onClientMoved(TeamSpeak3_Adapter_ServerQuery_Event $event)
 	}
 	else //User moved channels
 	{
-		debug_message('onClientMoved- Client Disconnected');
+		debug_message('onClientMoved- Client Moved');
 		$last_info['client_moved'] = array(
 			'client_id' => $data['clid'],
 			'channel_id' => $data['ctid']
 			);
 	}
 
-	/* Hook System to call specified function */
+	// Hook System to call specified function
 	if(!empty($cfg['hooks']['onClientMoved']))
 		foreach($cfg['hooks']['onClientMoved'] as $hook)
 		{
@@ -236,3 +245,4 @@ function onClientMoved(TeamSpeak3_Adapter_ServerQuery_Event $event)
 			$hook($event);
 		}
 }
+*/

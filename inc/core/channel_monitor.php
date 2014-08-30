@@ -2,7 +2,7 @@
 
 /* Hook Configuration */
 $cfg['hooks']['onTimeout'][] = 'channel_monitor';
-$cfg['hooks']['onClientMoved'][] = 'channel_monitor';
+//$cfg['hooks']['onClientMoved'][] = 'channel_monitor';
 $cfg['hooks']['onChannelEdited'][] = 'channel_edited';
 
 /* Global Arrays */
