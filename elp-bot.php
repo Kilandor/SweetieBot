@@ -34,7 +34,7 @@ try
 
 	/* connect to server, login and get TeamSpeak3_Node_Host object by URI */
 	$ts3 = TeamSpeak3::factory('serverquery://'.$server['user'].':'.$server['pass'].'@'.$server['ip'].':'.$server['port'].'/'.parse_server_options());
-	if($cfg['modules']['afk_mover']['enabled'] && $cfg['modules']['afk_mover']['cfg']['chan_id'] > 0)
+	if($cfg['modules']['afk_mover']['enabled'] && $cfg['modules']['afk_mover']['cfg']['bot_chan_id'] > 0)
 		$ts3->clientGetByName($ts3->getParent()->whoamiGet('client_login_name'))->move($cfg['modules']['afk_mover']['cfg']['bot_chan_id']); //Selects the bot and moves him to the specified channel
 
 	/* wait for events */
